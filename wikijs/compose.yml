@@ -1,0 +1,32 @@
+version: "3"
+services:
+
+  wikijs_db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: mydata
+      MYSQL_USER: username
+      MYSQL_PASSWORD: changeme
+      MYSQL_RANDOM_ROOT_PASSWORD: changeme
+    restart: unless-stopped
+    volumes:
+      - wikijs_db:/var/lib/mysql
+
+  wikijs_web:
+    image: lscr.io/linuxserver/wikijs:latest
+    depends_on:
+      - wikijs_db
+    environment:
+      WIKIJS_DB_HOST: wikijs_db
+      WIKIJS_DB_USER: username
+      WIKIJS_DB_PASSWORD: changeme
+      WIKIJS_DB_NAME: mydata
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - wikijs_data:/wiki
+
+volumes:
+  wikijs_db:
+  wikijs_data:
